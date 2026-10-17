@@ -1,0 +1,9 @@
+[Unit]
+Description=Matrix background work resources
+
+[Slice]
+CPUWeight=100
+IOWeight=100
+CPUQuota=150%
+MemoryHigh=1G
+TasksMax=64

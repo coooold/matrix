@@ -1,0 +1,7 @@
+[Unit]
+Description=Matrix interactive desktop resources
+
+[Slice]
+CPUWeight=1000
+IOWeight=1000
+MemoryLow=512M
