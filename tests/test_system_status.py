@@ -30,3 +30,19 @@ def test_cannot_end_self():
     identity = process_identity(os.getpid())
     with pytest.raises(PermissionError):
         terminate_process(os.getpid(), identity['start'])
+
+
+def test_two_views_keep_polling_until_both_close():
+    from PySide6.QtCore import QCoreApplication
+    from matrix_shell.system_status import SystemStatus
+    from test_backend import wait_until
+    app = QCoreApplication.instance() or QCoreApplication([])
+    status = SystemStatus()
+    status.acquire()
+    status.acquire()
+    status.release()
+    assert status.timer.isActive(), 'closing one screen must not freeze the other view'
+    status.release()
+    assert not status.timer.isActive()
+    wait_until(app, lambda: not status.worker.busy)
+    assert status.values['memoryTotalKiB'] > 0

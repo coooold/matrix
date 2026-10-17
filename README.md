@@ -86,5 +86,5 @@ Flatpak 页面只管理用户安装，使用已有可信远端及默认签名/TL
 - [云端验证与剩余缺口](docs/cloud-validation.md)
 - [架构](docs/architecture.md) · [性能协议](docs/performance.md) · [开发约定](AGENTS.md)
 
-可选参考采集：`pip install -r requirements-reference.txt` 后，用 `tools/capture_reference.py <固定提交的外部检出>` 生成 OMEGA 截图与 trace。
+可选参考采集：`.venv/bin/python -m pip install -r requirements-reference.txt` 后，用 `tools/capture_reference.py <固定提交的外部检出>` 生成 OMEGA 截图与 trace。
 `QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software .venv/bin/python tools/capture_matrix.py` 生成明确标记测试数据的预览截图。

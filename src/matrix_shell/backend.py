@@ -13,6 +13,7 @@ from .host_services import HostServices
 class DesktopBackend(QObject):
     changed = Signal()
     feedbackRequested = Signal()
+    overlayOpened = Signal(QObject)
 
     def __init__(self, config_dir=None, application_dirs=None):
         super().__init__()
@@ -82,6 +83,10 @@ class DesktopBackend(QObject):
     @Slot()
     def scanHome(self):
         self.scan(str(Path.home()))
+
+    @Slot(QObject)
+    def claimOverlay(self, window):
+        self.overlayOpened.emit(window)
 
     @Slot()
     def feedback(self):

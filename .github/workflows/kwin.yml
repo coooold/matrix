@@ -1,5 +1,8 @@
 name: kwin-cloud
 on: [push, pull_request, workflow_dispatch]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -11,7 +14,14 @@ jobs:
       - name: Install distribution runtime
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git python3 python3-venv libegl1 libopengl0 libxkbcommon0 libglib2.0-bin dbus-daemon kwin-wayland layer-shell-qt qml6-module-org-kde-layershell libkscreen-bin qt6-wayland konsole
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git python3 python3-venv libegl1 libopengl0 libxkbcommon0 libglib2.0-bin dbus-daemon kwin-wayland layer-shell-qt qml6-module-org-kde-layershell libkscreen-bin qt6-wayland konsole libcap2-bin passwd util-linux
+      - name: Remove unneeded file capability in disposable container
+        run: |
+          # Debian's CAP_SYS_NICE file capability is outside Docker's bounding set.
+          # Software compositor tests require no extra capability or privileged runner.
+          if [ -n "$(getcap /usr/bin/kwin_wayland)" ]; then
+            setcap -r /usr/bin/kwin_wayland
+          fi
       - uses: actions/checkout@v4
       - name: Run disposable sessions as a normal user
         run: |

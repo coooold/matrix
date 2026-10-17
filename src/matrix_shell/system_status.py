@@ -96,6 +96,7 @@ class SystemStatus(QObject):
         self.worker = LatestWorker(self)
         self.worker.changed.connect(self.changed)
         self.worker.completed.connect(self._loaded)
+        self._consumers = 0
         self._previous = None
         self._values = {}
         self.timer = QTimer(self)
@@ -111,12 +112,17 @@ class SystemStatus(QObject):
     def error(self):
         return self._error or self.worker.error
 
-    @Slot(bool)
-    def setActive(self, active):
-        if active:
+    @Slot()
+    def acquire(self):
+        self._consumers += 1
+        if self._consumers == 1:
             self.refresh()
             self.timer.start()
-        else:
+
+    @Slot()
+    def release(self):
+        self._consumers = max(0, self._consumers - 1)
+        if not self._consumers:
             self.timer.stop()
 
     @Slot()

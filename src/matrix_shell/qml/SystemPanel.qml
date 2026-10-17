@@ -13,7 +13,10 @@ Dialog {
     modal: true
     title: "系统状态"
     standardButtons: Dialog.Close
-    onVisibleChanged: system.setActive(visible)
+    property bool holdingLease: false
+    onOpened: { if (!holdingLease) { holdingLease = true; system.acquire() } }
+    onClosed: { if (holdingLease) { holdingLease = false; system.release() } }
+    Component.onDestruction: if (holdingLease && system) system.release()
     background: Rectangle { color: panel.theme.surface; radius: 16; border.color: panel.theme.border }
     contentItem: ColumnLayout {
         Text { textFormat: Text.PlainText;

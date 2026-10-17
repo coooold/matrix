@@ -20,6 +20,7 @@ Window {
     LayerShell.Window.keyboardInteractivity: LayerShell.Window.KeyboardInteractivityExclusive
     Theme { id: theme; accent: backend.settings.values.accent }
     function open() {
+        backend.claimOverlay(surface)
         visible = true
         if (mode === "apps" || mode === "files") Qt.callLater(launcher.refresh)
         else if (mode === "system") systemPanel.open()
@@ -27,7 +28,12 @@ Window {
         else if (mode === "store") storePanel.open()
         else if (mode === "window-actions") windowMenu.open()
     }
-    function dismiss() { visible = false }
+    function dismiss() {
+        if (!visible) return
+        visible = false
+        systemPanel.close(); notifications.close(); storePanel.close(); windowMenu.close()
+    }
+    Connections { target: backend; function onOverlayOpened(owner) { if (owner !== surface) surface.dismiss() } }
     Shortcut { sequence: "Escape"; enabled: surface.visible; onActivated: surface.dismiss() }
     MouseArea { anchors.fill: parent; onClicked: surface.dismiss() }
     Rectangle {
