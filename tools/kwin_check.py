@@ -66,7 +66,7 @@ def main():
                 parser.exit(1, 'KWin scenario timed out; inspect artifacts/kwin/session.log\n')
         if process.returncode or not result.exists() or not json.loads(result.read_text()).get('passed'):
             print((output / 'session.log').read_text()[-12000:], file=sys.stderr)
-            parser.exit(1, f'KWin scenario failed; inspect {output / 'session.log'}\n')
+            parser.exit(1, f"KWin scenario failed; inspect {output / 'session.log'}\n")
     print(result.read_text())
 
 

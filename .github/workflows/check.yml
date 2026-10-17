@@ -19,6 +19,7 @@ jobs:
       - run: ./tools/setup.sh
       - run: ./tools/check.sh
       - run: .venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist
+      - run: .venv/bin/python tools/wheel_check.py dist/matrix_shell-0.1.0-py3-none-any.whl
       - name: Upload test reports and wheel
         if: always()
         uses: actions/upload-artifact@v4
@@ -26,6 +27,7 @@ jobs:
           name: matrix-check-${{ github.sha }}
           path: |
             artifacts/tests.xml
+            artifacts/wheel-install.json
             dist/*.whl
           retention-days: 14
           if-no-files-found: ignore

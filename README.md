@@ -27,6 +27,7 @@
 ./tools/setup.sh
 ./tools/check.sh
 .venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist
+.venv/bin/python tools/wheel_check.py dist/matrix_shell-0.1.0-py3-none-any.whl
 ```
 
 在已有 Wayland 会话打开开发预览；`--kwin` 显式启用 KWin 窗口桥接：

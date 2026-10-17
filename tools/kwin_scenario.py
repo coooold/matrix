@@ -94,7 +94,8 @@ try:
         fixture_script = fixture_dir / 'client.py'
         fixture_script.write_text(source)
         fixture_desktop = fixture_dir / 'matrix-cloud.desktop'
-        fixture_desktop.write_text(f'[Desktop Entry]\nType=Application\nName=Cloud Fixture\nExec=env {quote_exec('LD_LIBRARY_PATH=' + QLibraryInfo.path(QLibraryInfo.LibrariesPath))} "{sys.executable}" "{fixture_script}" launcher\n')
+        client_libraries = quote_exec('LD_LIBRARY_PATH=' + QLibraryInfo.path(QLibraryInfo.LibrariesPath))
+        fixture_desktop.write_text(f'[Desktop Entry]\nType=Application\nName=Cloud Fixture\nExec=env {client_libraries} "{sys.executable}" "{fixture_script}" launcher\n')
         register(fixture_dir.parent, Path(sys.executable).with_name('matrix-app'), Path(os.environ['MATRIX_KWIN_PREFIX']) / 'usr/bin/konsole')
         backend.applications.directories = [fixture_dir]
         start = window.findChild(QQuickItem, 'sessionStartButton')
@@ -128,6 +129,19 @@ try:
         launched = next(entry['id'] for entry in bridge.entries if entry['appId'] == 'matrix-fixture-launcher')
         bridge.action(launched, 'close')
         until(lambda: not bridge.busy and not bridge.entries, 'Launched GUI client closed cleanly')
+        popup.setProperty('mode', 'system')
+        popup.open()
+        until(lambda: backend.system.timer.isActive(), 'Visible system dialog starts status polling')
+        if report['outputs'] == 2:
+            second_panel = list(session.windows.values())[1][1]
+            other_popup = second_panel.findChild(QObject, 'sessionLauncher')
+            other_popup.open()
+            until(lambda: other_popup.isVisible() and not popup.isVisible(), 'Opening a menu on another output closes the previous overlay')
+            until(lambda: not backend.system.timer.isActive(), 'Hidden system dialog releases its polling lease')
+            other_popup.dismiss()
+        else:
+            popup.dismiss()
+            until(lambda: not backend.system.timer.isActive(), 'Dismissing system overlay stops status polling')
     if session:
         backend.notifications.start()
         until(lambda: backend.notifications.online, 'Native session notification endpoint connected')

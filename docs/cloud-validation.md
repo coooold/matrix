@@ -3,6 +3,8 @@
 本轮实现并验证了可在云端运行的原生桌面主线，**没有完成完整桌面发布验收**。
 用户确认仅云端开发；同机 Windows、真实 GPU 与输入到光子测试继续保留为未执行，未降低原有标准。
 
+本次回归场景（APP-01 / DISPLAY-01 / SYS-01）：给定独立 wheel 和两个虚拟输出，启动入口应从安装目录读取资源；在第一屏打开系统面板、再从第二屏打开菜单时，第一屏菜单应关闭且释放状态轮询。仅保留当前可见视图的轮询，不让隐藏面板长期运行后台采样。
+
 ## 环境与可复现命令
 
 当前镜像：Debian 13 amd64、Python 3.12、PySide/Qt 6.8.3。
@@ -14,6 +16,7 @@
 ./tools/check.sh
 .venv/bin/python tools/cloud_check.py
 .venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist
+.venv/bin/python tools/wheel_check.py dist/matrix_shell-0.1.0-py3-none-any.whl
 .venv/bin/python tools/probe_environment.py
 ```
 
@@ -33,7 +36,7 @@
 | 基础应用 | 十进制运算；笔记重启不丢失；真实图片解码；媒体播放/暂停/静音状态；四种独立客户端；Konsole 真 PTY | pytest 与 KWin 场景报告 |
 | OMEGA 参考 | 固定提交，真实 Chromium 加载、九种截图和操作 trace；外部资源使用系统 CA 验证的 HTTPS 传输并记录哈希 | `artifacts/reference/report.json`、截图、`trace.zip` |
 | Matrix 外观 | 明确标记测试应用和文件的预览截图；原生菜单截图 | `artifacts/matrix/`、KWin 场景中的 `launcher.png` |
-| 发行包 | wheel 构建及独立目录安装启动 | `dist/` 与安装启动命令记录 |
+| 发行包 | wheel 构建后，在 checkout 外独立安装；确认导入路径与 QML/音效/KWin 资源，再运行两个实际入口 | `dist/`、`artifacts/wheel-install.json` |
 
 截图工具生成的测试条目不是实现进度，Qt 媒体状态不是听感验收。
 OMEGA 的资源加载保留 TLS 验证；没有关闭浏览器 Web 安全，也没有修改参考源码来让场景通过。
@@ -62,5 +65,7 @@ OMEGA 的资源加载保留 TLS 验证；没有关闭浏览器 Web 安全，也�
 ## 自动化边界
 
 `development-gates` 自动运行基础检查和打包，`kwin-cloud` 自动运行普通用户下的临时 Debian/KWin 软件合成场景并上传产物。
-新增工作流的远端执行结果需看具体 CI run；仅提交 YAML 不等于远端已通过。
+提交 `287260ac1d61ced5cd7808aa1a4c7c2a662eef0c` 已完成远端执行：[基础测试/打包 passed](https://github.com/coooold/matrix/actions/runs/39057481765)、[KWin 云端矩阵 passed](https://github.com/coooold/matrix/actions/runs/39057481606)。基础测试为 40 项；KWin 包含独立 CLI 和五种输出配置，不是硬件帧预算数据。
+干净 Debian CI 容器会移除 KWin 文件上的非必需 `CAP_SYS_NICE`，避免 Docker capability bounding set 导致 exec EPERM；没有增加容器权限或使用 privileged runner。
+后续提交仍需查看对应 run；已通过记录不代表未来代码自动通过。wheel 独立安装与多屏隐藏面板回归由后续工作流继续检查。
 仓库尚未自动设置分支保护、合并 PR、发布环境或安装默认登录会话。
