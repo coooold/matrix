@@ -3,14 +3,14 @@
   "reference": {
     "repository": "https://github.com/omgupta117/OMEGA-OS",
     "commit": "a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0",
-    "review_status": "source_reviewed_browser_unrun"
+    "review_status": "source_and_browser_captured_design_review_pending"
   },
   "items": [
     {
       "id": "REF-01",
       "stage": "M0",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "冻结体验基准",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/README.md",
@@ -24,8 +24,11 @@
       "gates": [
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tools/capture_reference.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "UX-01",
@@ -47,15 +50,18 @@
         "visual"
       ],
       "existing_checks": [
-        "tests/test_ui.py"
+        "tests/test_ui.py",
+        "tools/capture_matrix.py",
+        "tools/kwin_scenario.py"
       ],
-      "evidence": []
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "APP-01",
       "stage": "M1",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "真实应用启动器",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
@@ -71,14 +77,19 @@
         "kwin",
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_applications.py",
+        "tests/test_ui.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "CFG-01",
       "stage": "M1",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "主题与设置持久化",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js",
@@ -92,14 +103,18 @@
         "ci",
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_settings.py",
+        "tests/test_ui.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "WIN-01",
       "stage": "M2",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "窗口与任务栏闭环",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/WindowManager.js"
@@ -114,14 +129,17 @@
         "kwin",
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "DISPLAY-01",
       "stage": "M2",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "真实桌面层与多屏",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
@@ -136,8 +154,12 @@
         "kwin",
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tools/kwin_scenario.py",
+        "tools/cloud_check.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "FILE-01",
@@ -158,16 +180,17 @@
         "kwin"
       ],
       "existing_checks": [
-        "tests/test_backend.py",
-        "tests/test_ui.py"
+        "tests/test_files.py",
+        "tools/kwin_scenario.py"
       ],
-      "evidence": []
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "NOTIFY-01",
       "stage": "M3",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "通知中心",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/script.js",
@@ -182,14 +205,18 @@
         "kwin",
         "visual"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_notifications.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "SYS-01",
       "stage": "M3",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "系统状态与任务管理",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js",
@@ -204,14 +231,17 @@
         "ci",
         "kwin"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_system_status.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "APPS-01",
       "stage": "M3",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "基础应用体验",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
@@ -226,8 +256,13 @@
         "ci",
         "kwin"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_core_apps.py",
+        "tests/test_core_app_ui.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "PERF-01",
@@ -257,7 +292,7 @@
       "id": "SESSION-01",
       "stage": "M4",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "可信锁屏与恢复",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/script.js",
@@ -273,14 +308,18 @@
         "kwin",
         "session"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_host_services.py",
+        "packaging/systemd/matrix-shell.service.in"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "STORE-01",
       "stage": "M4",
       "scope": "required",
-      "status": "planned",
+      "status": "partial",
       "title": "真实应用安装",
       "sources": [
         "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js"
@@ -294,8 +333,11 @@
         "kwin",
         "session"
       ],
-      "existing_checks": [],
-      "evidence": []
+      "existing_checks": [
+        "tests/test_host_services.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
     },
     {
       "id": "EXTRA-01",
@@ -317,5 +359,10 @@
       "existing_checks": [],
       "evidence": []
     }
-  ]
+  ],
+  "cloud_validation": {
+    "report": "docs/cloud-validation.md",
+    "scope": "Cloud virtual outputs and software compositing only; full release acceptance remains separate",
+    "hardware_gate": "unrun"
+  }
 }

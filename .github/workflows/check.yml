@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libxkbcommon0 libgl1
+      - run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libxkbcommon0 libgl1 libglib2.0-bin dbus-daemon libpulse0
       - run: ./tools/setup.sh
       - run: ./tools/check.sh
       - run: .venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist

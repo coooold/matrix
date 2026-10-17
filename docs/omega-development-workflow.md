@@ -4,7 +4,7 @@
 
 参考仓库：[omgupta117/OMEGA-OS](https://github.com/omgupta117/OMEGA-OS)。
 本次核对固定在提交 [`a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0`](https://github.com/omgupta117/OMEGA-OS/tree/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0)，后续上游变化必须单独更新基准，不随 HEAD 自动漂移。
-已核对 README、HTML、CSS 和 JavaScript；尚未进行浏览器交互与截图复核，参考体验不能标记为运行验收通过。
+已核对 README、HTML、CSS 和 JavaScript，并在受控 Chromium 中采集九种界面和操作 trace；完整设计签核尚未完成，不能据此关闭 REF-01 的全部条件。
 
 OMEGA 是浏览器内的桌面模拟器；Matrix 的目标是运行真实应用的 Linux 桌面。
 采用它的深色未来感、界面层次和完整交互场景作为体验基准，继续采用 **Wayland + KWin + Qt Quick/QML**。
@@ -25,8 +25,8 @@ OMEGA 是浏览器内的桌面模拟器；Matrix 的目标是运行真实应用�
 | `js/AppTemplates.js/initSettings`、`script.js/playSound` | 强调色变更、合成音效；颜色未见持久化 | 设置持久化、静音/音量、减少动态效果与低特效模式 |
 | `js/AppTemplates.js/initTerminal`、`initWeather`、`initAI` | 命令分支、模拟天气、语音/规则式响应 | 终端必须是真实终端；天气/AI 为明确的后续扩展，有真实数据来源才称可用 |
 
-本次只研究行为，不复制上游代码或素材；检出中未发现 LICENSE。若未来需要复用，先确认授权。
-参考截图与录屏的采集步骤见下文；本次没有把源码观察描述成浏览器实测。
+参考源码和素材不进入 Matrix 运行界面；检出中未发现 LICENSE，未来复用前需确认授权。
+浏览器采集及软件合成会话证据见 [云端报告](cloud-validation.md)；截图、trace 与源码观察分别记录，不混作性能数据。
 
 ## 验收范围
 
@@ -45,7 +45,7 @@ OMEGA 是浏览器内的桌面模拟器；Matrix 的目标是运行真实应用�
 | 扩展 | 天气、AI、游戏、代码编辑器等 | EXTRA-01 | 不挤占主线；每项单独声明后端、凭据、许可和验收范围 |
 
 阶段可以开展独立预研，但不跨越缺失依赖宣布完成。每项拆为一个可评审 PR；较大项拆为适配器、模型、界面、集成测试几个连续 PR。
-首个建议任务是 APP-01：用受控测试 `.desktop` fixtures 做应用发现/过滤/启动，再接真实应用目录；不要继续把目录菜单称为应用启动器。
+APP-01 已接入 XDG/GIO 与真实 Wayland 客户端，后续从清单现有缺口继续；已实现能力及未执行条件见云端报告。
 
 ## 视觉与操作验收协议
 
@@ -73,13 +73,13 @@ OMEGA 是浏览器内的桌面模拟器；Matrix 的目标是运行真实应用�
 | Gate | 执行环境 | 必需检查 | 当前能力 |
 | --- | --- | --- | --- |
 | ci | GitHub 托管 Linux、offscreen | 后台模型、请求竞争、交互、验收清单结构、QML 帧提交、wheel | 可执行；不能证明 Wayland/GPU |
-| kwin | 固定 KDE/Qt 版本的隔离 VM/专用会话 | 真实应用、焦点、任务栏、吸附、保留区、多屏、热插拔 | 待建设，不从公网 PR 自动运行特权 runner |
+| kwin | 固定 KDE/Qt 的临时云端虚拟输出会话 | 真实应用、任务栏、贴靠、保留区、多屏、缩放、虚拟重连 | 已有 kwin-cloud；物理输入/输出仍待验收，不使用长期特权 runner |
 | visual | 固定字体/屏幕/数据的参考机 | golden 前后图、主题/动效降级、键盘、读屏与输入法 | 待建设；人工复核在自动视觉比较之后 |
 | hardware | 实机双系统、60/120Hz | 同机 Windows 对照，复制/CPU/GPU 压力，P95/P99、功耗、延迟 | 待采集，详见 performance.md |
 | session | 可回滚 VM + 实机 | 退出、崩溃重启、锁屏认证、恢复、升级/回滚 | 待建设；截图无法验证隔离与认证 |
 
 KWin/hardware/session runner 只在受控的手工触发或审核后的提交上运行；不要给不受信任的 PR 代码开放长期特权 runner。
-分支保护需在 GitHub 仓库设置里将 `development-gates / check` 设为 required check；本次只提交工作流，不声称已启用保护。
+分支保护需在 GitHub 仓库设置里将 `development-gates / check` 和 `kwin-cloud / virtual-session` 设为 required check；本次只提交工作流，不声称已启用保护。
 尚未实现的 gate 不放置永远成功的占位 job；其执行状态写入 PR 和证据记录。
 
 ## 证据与进度管理
