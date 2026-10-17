@@ -40,6 +40,8 @@ systemctl --user show matrix-interactive.slice -p CPUWeight -p IOWeight -p Memor
 
 ## 迭代顺序
 
+阶段交付与验收以 [OMEGA-OS 基准流程](omega-development-workflow.md) 和 [结构化清单](acceptance.json) 为准；以下是技术依赖顺序。
+
 1. 基础壳：设计令牌、键盘导航、可访问性、自动界面交互测试。
 2. KWin 集成：桌面层、面板保留区、多显示器、分数缩放、热插拔；先在嵌套会话验证。
 3. 真实桌面功能：应用注册表、窗口激活、通知；文件与搜索用独立服务。
@@ -48,7 +50,10 @@ systemctl --user show matrix-interactive.slice -p CPUWeight -p IOWeight -p Memor
 
 ## 自动任务闭环
 
-需求 → 验收条件 → 小范围实现 → pytest → offscreen QML smoke → wheel → PR。
+验收 ID → Given/When/Then → 接口验证 → 垂直切片 → 基础 CI → 必需场景 gate → 证据与人工复核 → PR。
+
+`./tools/check.sh` 验证验收清单结构、运行 pytest/JUnit 和 offscreen smoke；GitHub Actions 保存测试报告与 wheel。
+KWin、visual、hardware、session gate 尚未建设，不能由基础 CI 代替。
 GitHub Actions 自动执行基础 gate；失败必须诊断，不可通过跳过测试过关。
 涉及渲染、输入或资源管理时还必须在有 GPU 的专用 runner 或实机执行性能协议；基础 CI 无法替代。
 硬件结果由 reviewer 审核后才进入发布；暂不启用自动合并和自动发布。

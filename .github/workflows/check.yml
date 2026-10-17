@@ -16,3 +16,13 @@ jobs:
       - run: ./tools/setup.sh
       - run: ./tools/check.sh
       - run: .venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist
+      - name: Upload test reports and wheel
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrix-check-${{ github.sha }}
+          path: |
+            artifacts/tests.xml
+            dist/*.whl
+          retention-days: 14
+          if-no-files-found: ignore

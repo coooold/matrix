@@ -34,6 +34,8 @@ QT_QPA_PLATFORM=wayland .venv/bin/matrix-shell
 无显示服务的 CI 使用 offscreen，仅证明 QML 加载和帧提交，不证明 KWin 或 GPU 性能。
 运行测试后可构建发行包：`.venv/bin/python -m pip wheel --no-deps --no-build-isolation . -w dist`。
 
+- [OMEGA-OS 基准与验收驱动流程](docs/omega-development-workflow.md)
+- [结构化验收清单](docs/acceptance.json)（运行 `python3 tools/acceptance_report.py` 查看缺口）
 - [架构与迭代路线](docs/architecture.md)
 - [帧预算、负载与 Windows 对照验收](docs/performance.md)
 - [自动开发约定](AGENTS.md)

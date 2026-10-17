@@ -1,0 +1,33 @@
+name: 验收驱动开发任务
+description: 按 OMEGA 体验基准拆分一个可评审的 Matrix 开发切片
+title: "[验收ID] 用户行为"
+body:
+  - type: input
+    id: acceptance
+    attributes:
+      label: 验收 ID 与阶段
+      description: 对应 docs/acceptance.json；一次任务聚焦一个垂直切片。
+      placeholder: APP-01 / M1
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 目标行为与现有缺口
+      description: 包含固定 OMEGA SHA 的参考路径，区分源码观察与实测。
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Given / When / Then
+      description: 写正常、错误、空状态与取消/恢复路径；明确不包含范围。
+    validations:
+      required: true
+  - type: textarea
+    id: gates
+    attributes:
+      label: 必需 gate、依赖与证据计划
+      description: 写明 ci/kwin/visual/hardware/session、版本依赖、运行命令与产物；未运行不得按通过处理。
+    validations:
+      required: true
