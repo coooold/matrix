@@ -27,6 +27,7 @@ jobs:
       - name: Build native executable
         run: |
           python -m PyInstaller --noconfirm --clean packaging/windows/matrix.spec
+          if ($LASTEXITCODE -ne 0) { throw 'PyInstaller compilation failed' }
           Copy-Item packaging/windows/THIRD-PARTY-NOTICES.txt dist/MatrixPreview/
           Copy-Item packaging/windows/licenses dist/MatrixPreview/ -Recurse
           python -c "import sys,shutil; shutil.copyfile(sys.base_prefix + '/LICENSE.txt', 'dist/MatrixPreview/licenses/Python.txt')"

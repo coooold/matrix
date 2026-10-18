@@ -21,7 +21,9 @@ def main():
                    'QT_MEDIA_BACKEND': 'windows', 'LOCALAPPDATA': str(directory / 'local'),
                    'APPDATA': str(directory / 'roaming')}
             model_report = directory / 'installed-models.json'
+            diagnostic = directory / 'local/MatrixPreview/runtime.log'
             result = subprocess.run([str(executable), '--self-test', '--report', str(model_report)], cwd=directory, env=env, timeout=40)
+            report['runtime_log'] = diagnostic.read_text(encoding='utf-8') if diagnostic.exists() else ''
             models = json.loads(model_report.read_text(encoding='utf-8')) if model_report.exists() else {}
             report['installed_models'] = models
             if result.returncode or not models.get('passed'):
@@ -33,6 +35,7 @@ def main():
                 if not kind:
                     command += ['--config-dir', str(directory / 'profile')]
                 result = subprocess.run(command, cwd=directory, env=env, timeout=40)
+                report['runtime_log'] = diagnostic.read_text(encoding='utf-8') if diagnostic.exists() else ''
                 evidence = json.loads(result_path.read_text(encoding='utf-8')) if result_path.exists() else {}
                 report['checks'].append({'app': kind or 'shell', 'exit_code': result.returncode, 'evidence': evidence})
                 if result.returncode != 0 or not evidence.get('passed') or not evidence.get('frames', 0):

@@ -7,6 +7,7 @@ import time
 from PySide6.QtGui import QGuiApplication
 from matrix_shell.backend import DesktopBackend
 from matrix_shell.core_apps import CoreModel, calculate
+from matrix_shell.files import child_path
 
 
 def run(output):
@@ -19,6 +20,14 @@ def run(output):
         assert predicate(), 'Timed out waiting for real asynchronous model'
     with tempfile.TemporaryDirectory() as name:
         directory = Path(name)
+        if os.name == 'nt':
+            for invalid in ('..\\outside', 'C:alternate', 'NUL.txt', 'bad:name', 'trailing.'):
+                try:
+                    child_path(directory, invalid)
+                except ValueError:
+                    pass
+                else:
+                    raise AssertionError('Unsafe Windows filename accepted: ' + invalid)
         backend = DesktopBackend(config_dir=directory / 'profile', windows_preview=True)
         try:
             until(lambda: backend.settings.ready)

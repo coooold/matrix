@@ -1,8 +1,11 @@
 from PyInstaller.utils.hooks import collect_data_files
+from pathlib import Path
+
+spec_directory = Path(SPECPATH).resolve()
 
 a = Analysis(
-    ['packaging/windows/entry.py'],
-    pathex=['src'],
+    [str(spec_directory / 'entry.py')],
+    pathex=[str(spec_directory.parents[1] / 'src')],
     datas=collect_data_files('matrix_shell'),
     hiddenimports=['PySide6.QtQuick', 'PySide6.QtQuickControls2', 'PySide6.QtMultimedia'],
     excludes=['matrix_shell.kwin_bridge', 'matrix_shell.notifications',
