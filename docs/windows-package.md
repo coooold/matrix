@@ -21,3 +21,5 @@ python -m venv .venv
 ```
 
 CI 随后复制第三方说明和许可证，用 Inno Setup 6 生成按用户安装的 exe，并从独立安装目录运行 `tools/windows_smoke.py`。完整命令见 `.github/workflows/windows.yml`。Qt 使用可替换的动态库，Windows 音频使用 Media Foundation，不打包 FFmpeg 后端。验证产物随工作流上传，不能以构建成功代替安装后验证。
+
+打包钩子只收集本界面所需的 QtCore/QtQml/QtQuick/QtMultimedia QML 模块，避免将未使用的 WebEngine、Charts、PDF、虚拟键盘等模块一并装入预览包。
