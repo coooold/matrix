@@ -32,6 +32,7 @@ jobs:
           Copy-Item packaging/windows/licenses dist/MatrixPreview/ -Recurse
           python -c "import sys,shutil; shutil.copyfile(sys.base_prefix + '/LICENSE.txt', 'dist/MatrixPreview/licenses/Python.txt')"
           python -m pip freeze | Out-File -Encoding utf8 dist/MatrixPreview/build-dependencies.txt
+          @{ source_commit = '${{ github.sha }}'; pull_request_head = '${{ github.event.pull_request.head.sha }}'; run_url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'; version = '0.1.0'; architecture = 'x64'; channel = 'windows-preview' } | ConvertTo-Json | Out-File -Encoding utf8 dist/MatrixPreview/build-info.json
       - name: Compile per-user installer
         shell: pwsh
         run: |

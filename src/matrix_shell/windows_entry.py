@@ -5,6 +5,8 @@ import sys
 
 
 def main():
+    if os.name == 'nt':
+        os.environ.setdefault('QT_MEDIA_BACKEND', 'windows')
     if sys.stderr is None:
         directory = Path(os.environ.get('LOCALAPPDATA', str(Path.home()))) / 'MatrixPreview'
         directory.mkdir(parents=True, exist_ok=True)
