@@ -1,0 +1,18 @@
+# Template only; configure the executable before installing in a real user session.
+[Unit]
+Description=Matrix desktop shell
+PartOf=graphical-session.target
+After=graphical-session-pre.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart=@MATRIX_SHELL_EXECUTABLE@ --session --notifications
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=20
+Slice=matrix-interactive.slice
+
+[Install]
+WantedBy=graphical-session.target

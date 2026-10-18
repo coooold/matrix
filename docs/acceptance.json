@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "repository": "https://github.com/omgupta117/OMEGA-OS",
+    "commit": "a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0",
+    "review_status": "source_and_browser_captured_design_review_pending"
+  },
+  "items": [
+    {
+      "id": "REF-01",
+      "stage": "M0",
+      "scope": "required",
+      "status": "partial",
+      "title": "冻结体验基准",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/README.md",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/style.css"
+      ],
+      "acceptance": [
+        "固定提交在受控浏览器加载，记录外部字体/图标与控制台状态。",
+        "采集桌面、菜单、窗口、吸附、通知、文件、设置和解锁过渡；提交环境记录、截图/录屏与设计审核。"
+      ],
+      "gates": [
+        "visual"
+      ],
+      "existing_checks": [
+        "tools/capture_reference.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "UX-01",
+      "stage": "M1",
+      "scope": "required",
+      "status": "partial",
+      "title": "桌面视觉与可操作性",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/style.css",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html"
+      ],
+      "acceptance": [
+        "采用审核过的黑蓝/青紫视觉令牌和玻璃层次，普通文字对比度至少4.5:1。",
+        "鼠标、Tab/方向键/Esc、中文输入及读屏可操作；加载/空/错误/焦点状态可辨认。",
+        "固定分辨率/缩放的截图与Matrix golden复核通过；减少动态效果与低特效不损失功能。"
+      ],
+      "gates": [
+        "ci",
+        "visual"
+      ],
+      "existing_checks": [
+        "tests/test_ui.py",
+        "tools/capture_matrix.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "APP-01",
+      "stage": "M1",
+      "scope": "required",
+      "status": "partial",
+      "title": "真实应用启动器",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppManager.js"
+      ],
+      "acceptance": [
+        "从受支持的XDG应用目录读取合法desktop entry，按名称/类别过滤并隐藏不应显示的条目。",
+        "键盘或鼠标启动两个真实应用；不经shell拼接Exec，启动失败有反馈。",
+        "应用注册表变化可刷新，启动器/运行态不靠虚构窗口代替。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "visual"
+      ],
+      "existing_checks": [
+        "tests/test_applications.py",
+        "tests/test_ui.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "CFG-01",
+      "stage": "M1",
+      "scope": "required",
+      "status": "partial",
+      "title": "主题与设置持久化",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/script.js"
+      ],
+      "acceptance": [
+        "修改强调色、音效、减少动态效果、低特效设置后重启仍保留。",
+        "恢复默认值与损坏配置回退可验证；静音时不播放提示音。"
+      ],
+      "gates": [
+        "ci",
+        "visual"
+      ],
+      "existing_checks": [
+        "tests/test_settings.py",
+        "tests/test_ui.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "WIN-01",
+      "stage": "M2",
+      "scope": "required",
+      "status": "partial",
+      "title": "窗口与任务栏闭环",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/WindowManager.js"
+      ],
+      "acceptance": [
+        "在KWin会话打开至少两个独立客户端，任务栏准确显示/激活/最小化/恢复/关闭。",
+        "拖动到左/右/顶部按KWin规则吸附/最大化，恢复后尺寸和焦点合理；不遮挡面板保留区。",
+        "客户端退出/崩溃后移除运行项；不能用QML内部假窗口通过。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "visual"
+      ],
+      "existing_checks": [
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "DISPLAY-01",
+      "stage": "M2",
+      "scope": "required",
+      "status": "partial",
+      "title": "真实桌面层与多屏",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/style.css"
+      ],
+      "acceptance": [
+        "桌面位于普通客户端下方，面板保留区生效；记录实际使用的KDE协议与版本。",
+        "双屏混合缩放、主屏切换与拔插后面板/窗口可达，100%/125%/150%/200%缩放无不可操作裁剪。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "visual"
+      ],
+      "existing_checks": [
+        "tools/kwin_scenario.py",
+        "tools/cloud_check.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "FILE-01",
+      "stage": "M3",
+      "scope": "required",
+      "status": "partial",
+      "title": "真实文件工作流",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js"
+      ],
+      "acceptance": [
+        "在临时真实目录完成导航、新建目录/文件、打开文件、复制和移至回收站；重启后数据仍在。",
+        "测试权限拒绝、重名、取消、磁盘错误和超大目录分页；后台操作不阻塞界面。",
+        "现有200项名称预览/筛选只算部分实现，不能证明文件工作流通过。"
+      ],
+      "gates": [
+        "ci",
+        "kwin"
+      ],
+      "existing_checks": [
+        "tests/test_files.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "NOTIFY-01",
+      "stage": "M3",
+      "scope": "required",
+      "status": "partial",
+      "title": "通知中心",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/script.js",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html"
+      ],
+      "acceptance": [
+        "受控测试客户端通过freedesktop通知接口发通知，显示内容、动作、替换ID、关闭原因正确。",
+        "历史/清空/勿扰状态可操作；动作回到正确应用；与已有通知服务冲突时明确诊断。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "visual"
+      ],
+      "existing_checks": [
+        "tests/test_notifications.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "SYS-01",
+      "stage": "M3",
+      "scope": "required",
+      "status": "partial",
+      "title": "系统状态与任务管理",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html"
+      ],
+      "acceptance": [
+        "时钟、CPU/内存以及可用的电池/音量/网络状态来自真实后端，无法读取时显示不可用。",
+        "任务列表可追溯真实PID，结束受控子进程并核对退出状态；权限拒绝有提示。",
+        "无随机性能数字、虚构PID或把关闭窗口等同结束进程。"
+      ],
+      "gates": [
+        "ci",
+        "kwin"
+      ],
+      "existing_checks": [
+        "tests/test_system_status.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "APPS-01",
+      "stage": "M3",
+      "scope": "required",
+      "status": "partial",
+      "title": "基础应用体验",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js"
+      ],
+      "acceptance": [
+        "可发现并启动计算器、笔记/文本编辑器、真实终端、音频播放器、图片查看器；可使用成熟外部应用。",
+        "计算正确、笔记重启不丢失、终端命令真实执行、音频可暂停/静音、图片可打开。",
+        "记录测试应用包和版本；终端演示命令列表及浏览器模拟内容不能替代。"
+      ],
+      "gates": [
+        "ci",
+        "kwin"
+      ],
+      "existing_checks": [
+        "tests/test_core_apps.py",
+        "tests/test_core_app_ui.py",
+        "tools/kwin_scenario.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "PERF-01",
+      "stage": "M4",
+      "scope": "required",
+      "status": "planned",
+      "title": "负载下响应与Windows对照",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/README.md",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/style.css"
+      ],
+      "acceptance": [
+        "按照performance.md采集60/120Hz的presentation帧间隔、实际丢帧、输入延迟、冷/热启动与首次可操作。",
+        "复制文件拖窗、CPU高负载开菜单、GPU高负载切换应用均需同机Windows对照与原始数据。",
+        "预先固定条件和误差/置信区间，各必需场景不得劣于Windows；软件渲染或平均FPS不足以通过。"
+      ],
+      "gates": [
+        "ci",
+        "hardware"
+      ],
+      "existing_checks": [
+        "tests/test_frame_report.py"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SESSION-01",
+      "stage": "M4",
+      "scope": "required",
+      "status": "partial",
+      "title": "可信锁屏与恢复",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/script.js",
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/index.html"
+      ],
+      "acceptance": [
+        "使用可信会话锁定/认证组件；错误凭据不能解锁，切换TTY/多屏/恢复后锁定仍生效。",
+        "正常退出、壳崩溃重启、挂起恢复、升级失败回滚有演练记录且不丢用户数据。",
+        "锁屏视觉动画或接受任意PIN的页面不算认证实现。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "session"
+      ],
+      "existing_checks": [
+        "tests/test_host_services.py",
+        "packaging/systemd/matrix-shell.service.in"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "STORE-01",
+      "stage": "M4",
+      "scope": "required",
+      "status": "partial",
+      "title": "真实应用安装",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js"
+      ],
+      "acceptance": [
+        "使用选定的PackageKit/Flatpak等后端，在隔离环境安装测试应用，出现在启动器并实际运行，卸载后移除。",
+        "进度、失败、取消、权限和离线场景可验证；保留包签名/TLS校验，不以定时器模拟完成。"
+      ],
+      "gates": [
+        "ci",
+        "kwin",
+        "session"
+      ],
+      "existing_checks": [
+        "tests/test_host_services.py"
+      ],
+      "evidence": [],
+      "cloud_report": "docs/cloud-validation.md"
+    },
+    {
+      "id": "EXTRA-01",
+      "stage": "extension",
+      "scope": "extension",
+      "status": "planned",
+      "title": "天气、AI与附加应用",
+      "sources": [
+        "https://github.com/omgupta117/OMEGA-OS/blob/a4e2a52e3b5ce1c2f0f0161c8dea624bd553c7f0/js/AppTemplates.js"
+      ],
+      "acceptance": [
+        "天气/AI/游戏/代码编辑器分别建立独立验收项，声明后端、数据来源、网络、许可及隐私范围。",
+        "无服务或凭据时明确不可用；不得把规则式或随机数据称为真实在线服务。"
+      ],
+      "gates": [
+        "ci",
+        "kwin"
+      ],
+      "existing_checks": [],
+      "evidence": []
+    }
+  ],
+  "cloud_validation": {
+    "report": "docs/cloud-validation.md",
+    "scope": "Cloud virtual outputs and software compositing only; full release acceptance remains separate",
+    "hardware_gate": "unrun"
+  }
+}

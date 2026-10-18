@@ -1,0 +1,7 @@
+{
+  "run_id": 39087139386,
+  "source_commit": "b1305fa6074c9b18a1d4daf286b72d642a79c59f",
+  "tag": "windows-preview-v0.1.0-b1305fa",
+  "installer": "MatrixPreview-0.1.0-a2dfbff698eb-windows-x64-setup.exe",
+  "sha256": "959706a8d943240544700ee5270e950d31ab583db160d9854552616b4cabf154"
+}

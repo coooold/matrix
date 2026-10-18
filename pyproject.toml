@@ -7,16 +7,17 @@ name = "matrix-shell"
 version = "0.1.0"
 description = "Qt Quick desktop shell for a KWin Wayland session"
 requires-python = ">=3.11"
-dependencies = ["PySide6==6.8.3"]
+dependencies = ["PySide6==6.8.3", "dbus-next==0.2.3"]
 
 [project.scripts]
-matrix-shell = "matrix_shell.app:main"
+matrix-shell = "matrix_shell.client_entry:shell_main"
+matrix-app = "matrix_shell.client_entry:app_main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-matrix_shell = ["qml/*.qml"]
+matrix_shell = ["qml/*.qml", "sounds/*.wav", "kwin/*.js"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

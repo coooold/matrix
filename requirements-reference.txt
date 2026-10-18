@@ -1,0 +1,2 @@
+# Optional browser reference capture; use the installed Chromium executable.
+playwright==1.51.0

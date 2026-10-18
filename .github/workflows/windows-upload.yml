@@ -1,0 +1,22 @@
+name: upload-requested-windows-preview
+on:
+  push:
+    branches: [main, feat/matrix-shell-foundation]
+    paths: [packaging/windows/upload-request.json]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  upload-verified-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload the explicitly requested, verified build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 tools/upload_windows_preview.py

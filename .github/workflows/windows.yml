@@ -1,0 +1,66 @@
+name: windows-installer
+on: [push, pull_request, workflow_dispatch]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  build-install-test:
+    runs-on: windows-2022
+    timeout-minutes: 25
+    env:
+      QT_MEDIA_BACKEND: windows
+      QT_QUICK_BACKEND: software
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Install pinned build tools
+        run: |
+          python -m pip install -r requirements-windows-build.txt
+          python -m pip install --no-deps --no-build-isolation -e .
+      - name: Verify preview models and Unicode persistence
+        run: python tools/windows_model_check.py
+      - name: Build native executable
+        run: |
+          python -m PyInstaller --noconfirm --clean packaging/windows/matrix.spec
+          if ($LASTEXITCODE -ne 0) { throw 'PyInstaller compilation failed' }
+          Copy-Item packaging/windows/THIRD-PARTY-NOTICES.txt dist/MatrixPreview/
+          Copy-Item packaging/windows/licenses dist/MatrixPreview/ -Recurse
+          python -c "import sys,shutil; shutil.copyfile(sys.base_prefix + '/LICENSE.txt', 'dist/MatrixPreview/licenses/Python.txt')"
+          python -m pip freeze | Out-File -Encoding utf8 dist/MatrixPreview/build-dependencies.txt
+          @{ source_commit = '${{ github.sha }}'; pull_request_head = '${{ github.event.pull_request.head.sha }}'; run_url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'; version = '0.1.0'; architecture = 'x64'; channel = 'windows-preview' } | ConvertTo-Json | Out-File -Encoding utf8 dist/MatrixPreview/build-info.json
+      - name: Compile per-user installer
+        shell: pwsh
+        run: |
+          $build = '${{ github.sha }}'.Substring(0, 12)
+          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' "/DBuildId=$build" packaging/windows/installer.iss
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
+      - name: Install, exercise installed binaries, and uninstall
+        shell: pwsh
+        run: |
+          $installer = (Get-ChildItem dist/windows/*-setup.exe).FullName
+          $target = Join-Path $env:RUNNER_TEMP 'Matrix Preview Installed'
+          $process = Start-Process $installer -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CURRENTUSER', "/DIR=`"$target`"") -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Installer failed: $($process.ExitCode)" }
+          python tools/windows_smoke.py "$target/MatrixPreview.exe"
+          if ($LASTEXITCODE -ne 0) { throw 'Installed executable smoke failed' }
+          $uninstall = Start-Process "$target/unins000.exe" -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART') -Wait -PassThru
+          if ($uninstall.ExitCode -ne 0) { throw 'Uninstall failed' }
+          if (Test-Path "$target/MatrixPreview.exe") { throw 'Uninstall left the executable behind' }
+          Get-ChildItem dist/windows/*.exe | ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$hash  $($_.Name)" | Out-File -Encoding ascii ($_.FullName + '.sha256')
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: MatrixPreview-windows-x64-${{ github.sha }}
+          path: |
+            dist/windows/*
+            artifacts/windows-*.json
+          retention-days: 30
+          if-no-files-found: error
