@@ -1,0 +1,26 @@
+Matrix Windows Preview - third-party components
+
+Qt and PySide6 / Shiboken6 6.8.3
+Copyright The Qt Company Ltd. and other contributors.
+Distributed as dynamically linked libraries under the GNU LGPL v3 terms.
+License texts: licenses/LGPL-3.0.txt and licenses/GPL-3.0.txt.
+Source and license notices:
+https://code.qt.io/cgit/qt/qtbase.git/tree/?h=v6.8.3
+https://code.qt.io/cgit/pyside/pyside-setup.git/tree/?h=v6.8.3
+https://www.qt.io/licensing/open-source-lgpl-obligations
+This preview uses replaceable libraries in _internal/PySide6. Modification and
+reverse engineering for debugging modifications of LGPL components are allowed.
+Rebuild instructions are in docs/windows-package.md in the Matrix repository.
+
+CPython 3.12
+Copyright Python Software Foundation and contributors. See licenses/Python.txt.
+https://www.python.org/downloads/source/
+
+PyInstaller bootloader 6.16.0
+GPL v2 or later with the PyInstaller bootloader exception permitting applications
+to be distributed under their own terms. See licenses/PyInstaller.txt.
+https://github.com/pyinstaller/pyinstaller/tree/v6.16.0
+
+Qt Multimedia uses the system Windows Media Foundation backend in this build.
+The PySide wheel's FFmpeg backend and FFmpeg binaries are excluded from the
+Windows distribution. Native Linux builds are unaffected.

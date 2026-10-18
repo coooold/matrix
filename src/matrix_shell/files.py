@@ -17,6 +17,10 @@ PAGE_SIZE = 200
 def child_path(directory, name):
     if not name or name in ('.', '..') or '/' in name or '\x00' in name:
         raise ValueError('名称不能包含路径分隔符或为空')
+    if os.name == 'nt' and (any(char in name for char in '\\:<>"|?*') or name.endswith((' ', '.'))
+                            or name.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL',
+                                 *[f'COM{i}' for i in range(1, 10)], *[f'LPT{i}' for i in range(1, 10)]}):
+        raise ValueError('名称包含 Windows 不允许的字符或保留名称')
     return directory / name
 
 
@@ -214,7 +218,7 @@ class FileBrowser(QObject):
             target = child_path(directory, name)
             if target.is_dir():
                 return target
-            launch_gio('open', target)
+            self._open_file(target)
             return directory
         if self.busy:
             return
@@ -226,3 +230,6 @@ class FileBrowser(QObject):
             rows, more = page(target)
             return str(target), rows, sorted((r['name'] for r in rows if query in r['name'].casefold()), key=str.casefold), more
         self.worker.submit(work)
+
+    def _open_file(self, path):
+        launch_gio('open', path)

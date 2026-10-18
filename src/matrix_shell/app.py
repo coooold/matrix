@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import json
 from pathlib import Path
 from PySide6.QtCore import QTimer, QUrl, QLibraryInfo
 from PySide6.QtGui import QGuiApplication
@@ -16,7 +17,12 @@ def main():
     parser.add_argument('--notifications', action='store_true', help='Request the freedesktop notification name without replacing an existing owner')
     parser.add_argument('--session', action='store_true', help='Opt-in layer-shell desktop session; requires LayerShellQt QML module')
     parser.add_argument('--kwin', action='store_true', help='Enable the KWin 6 scripting window bridge')
+    parser.add_argument('--windows-preview', action='store_true', help='Run the explicit Windows preview backend')
     args = parser.parse_args()
+    preview = os.name == 'nt' or args.windows_preview
+    if preview and (args.session or args.kwin or args.notifications):
+        print('Windows preview does not support Linux session services.', file=sys.stderr)
+        return 2
     try:
         plugins = isolate_plugins(args.session)
     except RuntimeError as error:
@@ -28,10 +34,10 @@ def main():
             return 2
         os.environ['XDG_CURRENT_DESKTOP'] = 'Matrix:KDE'
     app = QGuiApplication([sys.argv[0]])
-    app.setApplicationName('Matrix')
+    app.setApplicationName('MatrixPreview' if preview else 'Matrix')
     app.setDesktopFileName('matrix-shell')
     engine = QQmlApplicationEngine()
-    backend = DesktopBackend(config_dir=args.config_dir)
+    backend = DesktopBackend(config_dir=args.config_dir, windows_preview=preview)
     app.aboutToQuit.connect(backend.shutdown)
     if args.kwin or args.session:
         backend.windows.start()
@@ -78,6 +84,8 @@ def main():
             healthy = bool(frames) and (not (args.kwin or args.session) or backend.windows.online) and (not args.notifications or backend.notifications.online)
             if not healthy:
                 print('Smoke failed:', backend.windows.error, backend.notifications.error, file=sys.stderr)
+            if os.environ.get('MATRIX_SMOKE_REPORT'):
+                Path(os.environ['MATRIX_SMOKE_REPORT']).write_text(json.dumps({'passed': healthy, 'frames': len(frames), 'windows_preview': preview}), encoding='utf-8')
             app.exit(0 if healthy else 2)
         QTimer.singleShot(1500, finish_smoke)
     return app.exec()

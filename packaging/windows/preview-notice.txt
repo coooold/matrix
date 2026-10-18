@@ -1,0 +1,14 @@
+Matrix Desktop Preview 0.1.0 for Windows x64
+
+This is a windowed Qt Quick preview and four bundled client applications.
+It does not install Linux, replace Explorer, or provide a KWin/Wayland session.
+Linux notifications, lock screen, Flatpak and Linux system metrics are unavailable.
+File listing/create/copy are real operations on your files. Recycle-bin deletion
+is not implemented in the preview; use Windows Explorer instead.
+
+This experimental installer is unsigned. User settings and notes are retained
+when uninstalling. No administrator privileges or default-association changes
+are required.
+
+The application bundles Qt/PySide6 and other third-party components.
+See THIRD-PARTY-NOTICES.txt and the licenses directory in the installation.

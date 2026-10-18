@@ -9,7 +9,7 @@ Window {
     width: 1280; height: 800
     minimumWidth: 360; minimumHeight: 480
     visible: true
-    title: "Matrix · Desktop Preview"
+    title: backend.windowsPreview ? "Matrix · Windows Preview" : "Matrix · Desktop Preview"
     color: theme.background
     property bool launcherOpen: false
     property bool settingsOpen: false
@@ -65,7 +65,7 @@ Window {
         anchors { left: parent.left; top: parent.top; margins: 32 }
         spacing: 12
         Text { text: "M A T R I X"; color: theme.text; font.pixelSize: 36; font.weight: Font.Light }
-        Text { visible: !!backend.windows.error; text: "窗口服务不可用，请检查 KWin 会话"; color: theme.error; font.pixelSize: theme.bodySize }
+        Text { visible: !!backend.windows.error; text: backend.windows.error; textFormat: Text.PlainText; color: theme.error; font.pixelSize: theme.bodySize; width: Math.max(280, root.width - 64); wrapMode: Text.Wrap }
         Text { text: "让每一次操作都从容流畅"; color: theme.muted; font.pixelSize: theme.bodySize }
     }
     Rectangle {

@@ -30,8 +30,8 @@ def isolate_plugins(layer_shell=False):
         target = qml_root / 'org/kde'
         target.mkdir(parents=True)
         (target / 'layershell').symlink_to(module.resolve())
-    os.environ['QML_IMPORT_PATH'] = QLibraryInfo.path(QLibraryInfo.QmlImportsPath) + ':' + str(qml_root)
-    os.environ['QT_PLUGIN_PATH'] = own + ':' + temporary.name
+    os.environ['QML_IMPORT_PATH'] = QLibraryInfo.path(QLibraryInfo.QmlImportsPath) + os.pathsep + str(qml_root)
+    os.environ['QT_PLUGIN_PATH'] = own + os.pathsep + temporary.name
     os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = str(Path(own) / 'platforms')
     return temporary
 

@@ -1,5 +1,6 @@
 """Small real standalone Qt applications; terminal integration uses Konsole."""
 import argparse
+import json
 import ast
 from decimal import Decimal, localcontext, DivisionByZero, InvalidOperation, Overflow
 import operator
@@ -47,7 +48,7 @@ def save_note(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(prefix='.matrix-note-', dir=path.parent)
     try:
-        with os.fdopen(descriptor, 'w') as stream:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
             stream.write(text)
             stream.flush()
             os.fsync(stream.fileno())
@@ -80,7 +81,7 @@ class CoreModel(QObject):
                     return ''
                 if self.file.stat().st_size > 2 * 1024 * 1024:
                     raise ValueError('笔记文件超过 2 MiB，请使用外部编辑器')
-                return self.file.read_text()
+                return self.file.read_text(encoding='utf-8')
             self.worker.submit(read)
 
     @Property(str, constant=True)
@@ -165,7 +166,15 @@ def main():
     if not engine.rootObjects():
         return 1
     if args.smoke:
-        QTimer.singleShot(500, app.quit)
+        frames = []
+        engine.rootObjects()[0].frameSwapped.connect(lambda: frames.append(True))
+        engine.rootObjects()[0].requestUpdate()
+        def finish():
+            healthy = bool(frames) and model.ready and not model.worker.error
+            if os.environ.get('MATRIX_SMOKE_REPORT'):
+                Path(os.environ['MATRIX_SMOKE_REPORT']).write_text(json.dumps({'passed': healthy, 'frames': len(frames), 'kind': args.kind}), encoding='utf-8')
+            app.exit(0 if healthy else 2)
+        QTimer.singleShot(1000, finish)
     return app.exec()
 
 

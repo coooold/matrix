@@ -24,7 +24,7 @@ Dialog {
             color: panel.theme.text
         }
         Text { textFormat: Text.PlainText;
-            text: "内存 " + ((panel.system.values.memoryUsedKiB || 0) / 1048576).toFixed(2) + " / " + ((panel.system.values.memoryTotalKiB || 0) / 1048576).toFixed(2) + " GiB"
+            text: panel.system.values.memoryTotalKiB === undefined ? "内存指标不可用" : "内存 " + (panel.system.values.memoryUsedKiB / 1048576).toFixed(2) + " / " + (panel.system.values.memoryTotalKiB / 1048576).toFixed(2) + " GiB"
             color: panel.theme.text
         }
         Text { textFormat: Text.PlainText;

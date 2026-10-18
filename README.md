@@ -20,6 +20,8 @@
 
 ## 基础开发与检查
 
+Windows 可运行独立的 **桌面预览安装包**；它不安装 Linux 或替换 Explorer。构建、功能范围与安装验证见 [Windows 打包说明](docs/windows-package.md)，安装包由 `windows-installer` 工作流上传至 GitHub。
+
 需要 Linux、Python 3.11+、venv、GIO、D-Bus，以及 Qt 的 EGL/OpenGL/xkbcommon 运行库。
 当前验证工具链：PySide/Qt 6.8.3；云端 KWin/LayerShellQt 版本记录在验证报告中。
 
